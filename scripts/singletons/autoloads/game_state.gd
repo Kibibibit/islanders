@@ -3,7 +3,12 @@ extends Node
 const MAX_ID: int = (2 ** 16) - 1
 
 
+const MAGIC := "ISLESAV"
+const MAGIC_LEN := len(MAGIC)
+
+
 var save_version: int = 0
+var unix_created: int = roundi(Time.get_unix_time_from_system())
 var money: int = 0
 var island_name: String
 var islanders: Dictionary[int, IslanderData] = {}
@@ -16,7 +21,9 @@ func generate_islander_id() -> int:
 	return out
 		
 func save_game(file: FileAccess):
+	file.store_buffer(MAGIC.to_utf8_buffer())
 	file.store_32(save_version)
+	file.store_64(unix_created)
 	file.store_64(money)
 	file.store_pascal_string(island_name)
 	file.store_16(islanders.size())
@@ -32,7 +39,11 @@ func save_game(file: FileAccess):
 	
 
 func load_game(file: FileAccess):
+	if file.get_buffer(MAGIC_LEN).get_string_from_utf8() != MAGIC:
+		push_error("Invalid save file magic")
+		return
 	save_version = file.get_32()
+	unix_created = file.get_64()
 	money = file.get_64()
 	island_name = file.get_pascal_string()
 	var islander_count: int = file.get_16()
