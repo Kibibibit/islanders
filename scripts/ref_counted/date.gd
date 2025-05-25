@@ -1,6 +1,8 @@
 extends RefCounted
 class_name Date
 
+# Easier to just store dates as 64 bits
+const SIZE: int = 8
 
 enum Keys {
 	YEAR,

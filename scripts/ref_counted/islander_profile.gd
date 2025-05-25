@@ -1,27 +1,46 @@
 extends RefCounted
 class_name IslanderProfile
 
+# Breakdown:
+# Name len * 3 - first, nick, lastnames
+# Date size -> birthday
+# 1 + 1 -> Body type enums
+# ColorProfile.SIZE -> colors
+# 1 + 1 -> width/height modifiers
+# 1 + -> preferred flavour
+# 1 -> life stage
+
+const SIZE: int = SerialUtils.MAX_NAME_LEN*3 + \
+				Date.SIZE + \
+				Personality.SIZE + \
+				1 + 1 + \
+				ColorProfile.SIZE + \
+				1 + 1 + \
+				1 + \
+				1
+				
+				
 
 enum BodyType {
-	A, # Neutral proportios
-	B, # Slightly masculine
-	C, # Slightly feminine
-	D, # Very masculine
-	E, # Very feminine
+	A = 0, # Neutral proportios
+	B = 1, # Slightly masculine
+	C = 2, # Slightly feminine
+	D = 3, # Very masculine
+	E = 4, # Very feminine
 }
 enum YoungBodyType {
-	A, # Neutral proportions for teenagers
-	B, # Masculine for teenagers
-	C, # Feminine for teenagers
+	A = 0, # Neutral proportions for teenagers
+	B = 1, # Masculine for teenagers
+	C = 2, # Feminine for teenagers
 }
 
 enum LifeStage {
-	BABY,
-	CHILD,
-	TEENAGER,
-	YOUNG_ADULT,
-	ADULT,
-	ELDER,
+	BABY = 0,
+	CHILD = 1,
+	TEENAGER = 2,
+	YOUNG_ADULT = 3,
+	ADULT = 4,
+	ELDER = 5,
 }
 
 ## How many times each body type appears in the distribution for young adults
@@ -48,23 +67,6 @@ const BODY_TYPE_DISTRIBUTIONS: Dictionary[YoungBodyType, Dictionary] = {
 		BodyType.E: 5
 	}
 }
-
-## Helper class to store color information
-class ColorProfile:
-	var favourite_color: Color
-	var hair_color: Color
-	var skin_color: Color
-	var pupil_eye_color: Color
-	var iris_eye_color: Color
-	var lip_color: Color
-	func _init() -> void:
-		favourite_color = ColorPalettes.BASIC_PALETTE.pick_random()
-		hair_color = ColorPalettes.HAIR_PRESET_PALETTE.pick_random()
-		skin_color = ColorPalettes.SKIN_PRESET_PALETTE.pick_random()
-		pupil_eye_color = Color.BLACK
-		iris_eye_color = ColorPalettes.BASIC_PALETTE.pick_random()
-		lip_color = Color(0.8, 0.2, 0.2) # Default to a soft red color
-		
 
 
 
@@ -96,8 +98,6 @@ func _init() -> void:
 	width_modifier = 1.0
 	life_stage = LifeStage.ADULT
 
-
-
 func _generate_adult_body_type(_young_body_type: YoungBodyType) -> BodyType:
 	var distribution: Dictionary = BODY_TYPE_DISTRIBUTIONS[_young_body_type]
 
@@ -107,3 +107,83 @@ func _generate_adult_body_type(_young_body_type: YoungBodyType) -> BodyType:
 		for i in range(count):
 			items.append(b)
 	return items.pick_random()
+
+func serialise() -> PackedByteArray:
+	var ptr: int = 0
+	var out := PackedByteArray()
+	out.resize(SIZE)
+	out.fill(0)
+	
+	out.encode_var(ptr, first_name)
+	ptr += SerialUtils.MAX_NAME_LEN
+	
+	out.encode_var(ptr, last_name)
+	ptr += SerialUtils.MAX_NAME_LEN
+	
+	out.encode_var(ptr, nickname)
+	ptr += SerialUtils.MAX_NAME_LEN
+	
+	out.encode_s64(ptr, birthdate.to_unix_time())
+	ptr += Date.SIZE
+	
+	out.encode_var(ptr, personality.serialise())
+	ptr += Personality.SIZE
+
+	out.encode_u8(ptr, body_type as int)
+	ptr += 1
+	out.encode_u8(ptr, young_body_type as int)
+	ptr += 1
+
+	out.encode_var(ptr, colors.serialise())
+	ptr += ColorProfile.SIZE
+
+	out.encode_u8(ptr, SerialUtils.float_to_u8(height_modifier, 100))
+	ptr += 1
+	out.encode_u8(ptr, SerialUtils.float_to_u8(width_modifier, 100))
+	ptr += 1
+	out.encode_var(ptr, preferred_flavour.serialise())
+	ptr += Flavour.SIZE
+
+	out.encode_u8(ptr, life_stage as int)
+	
+	
+	return out
+
+static func deserialise(data: PackedByteArray) -> IslanderProfile:
+	var ptr: int = 0
+	var out := IslanderProfile.new()
+	
+	out.first_name = data.decode_var(ptr)
+	ptr += SerialUtils.MAX_NAME_LEN
+	
+	out.last_name = data.decode_var(ptr)
+	ptr += SerialUtils.MAX_NAME_LEN
+	
+	out.nickname = data.decode_var(ptr)
+	ptr += SerialUtils.MAX_NAME_LEN
+	
+	out.birthdate = Date.from_unix_time(data.decode_s64(ptr))
+	ptr += Date.SIZE
+	
+	out.personality = Personality.deserialise(data.slice(ptr, ptr + Personality.SIZE))
+	ptr += Personality.SIZE
+
+	out.body_type = data.decode_u8(ptr) as BodyType
+	ptr += 1
+	out.young_body_type = data.decode_u8(ptr) as YoungBodyType
+	ptr += 1
+
+	out.colors = ColorProfile.deserialise(data.slice(ptr, ptr + ColorProfile.SIZE))
+	ptr += ColorProfile.SIZE
+
+	out.height_modifier = SerialUtils.u8_to_float(data.decode_u8(ptr), 100)
+	ptr += 1
+	out.width_modifier = SerialUtils.u8_to_float(data.decode_u8(ptr), 100)
+	ptr += 1
+
+	out.preferred_flavour = Flavour.deserialise(data.slice(ptr, ptr + Flavour.SIZE))
+	ptr += Flavour.SIZE
+
+	out.life_stage = data.decode_u8(ptr) as LifeStage
+	
+	return out

@@ -3,8 +3,6 @@ extends Timer
 
 const UPDATE_DELTA: int = 5
 
-var last_islander_event_time: Dictionary[String, int] = {}
-var islanders: Dictionary[String, IslanderData] = {}
 
 var loaded_data: bool = false
 
@@ -27,12 +25,12 @@ func _do_update():
 		push_error("Update loop started before data loaded!")
 		return
 	var current_time := _get_unix_seconds()
-	for islander_id in islanders.keys():
-		var islander: IslanderData = islanders[islander_id]
+	for islander_id in GameState.islanders.keys():
+		var islander: IslanderData = GameState.islanders[islander_id]
 		islander.update_state(UPDATE_DELTA as float)
 		
-		var time_since_last_event = current_time - last_islander_event_time[islander_id]
+		var time_since_last_event = current_time - islander.state.last_event_time
 		
 		if time_since_last_event > 30:
 			print("Islander is getting new event!")
-			last_islander_event_time[islander_id] = current_time
+			islander.state.last_event_time = current_time
