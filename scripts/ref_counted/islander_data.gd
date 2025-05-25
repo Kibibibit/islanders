@@ -40,12 +40,14 @@ func serialise() -> PackedByteArray:
 
 	
 	out.encode_u16(ptr, profile_serialised.size())
-	out.encode_var(ptr, profile.serialise())
+	ptr += 2
+	SerialUtils.memcpy(profile_serialised, out, 0, ptr)
 	ptr += profile_serialised.size()
 
 	out.encode_u16(ptr, state_serialised.size())
-	out.encode_var(ptr, state.serialise())
-	ptr += state_serialised.size()
+	ptr += 2
+	SerialUtils.memcpy(state_serialised, out, 0, ptr)
+
 
 	return out
 

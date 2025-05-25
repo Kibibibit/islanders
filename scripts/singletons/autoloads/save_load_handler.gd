@@ -22,13 +22,13 @@ func save_game() -> bool:
 	
 	
 	print("Trying to store data in %s" % filename)
-	GameState.save(file)
+	GameState.save_game(file)
 	file.close()
 
 	
 	file = FileAccess.open(filename, FileAccess.READ)
 	
-	GameState.load(file)
+	GameState.load_game(file)
 	
 	file.close()
 	

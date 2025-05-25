@@ -1,6 +1,6 @@
 extends Node
 
-const MAX_ID: int = (2 ** 2) - 1
+const MAX_ID: int = (2 ** 16) - 1
 
 
 var save_version: int = 0
@@ -15,26 +15,29 @@ func generate_islander_id() -> int:
 		out = randi_range(0, MAX_ID)
 	return out
 		
-func save(file: FileAccess):
+func save_game(file: FileAccess):
 	file.store_32(save_version)
 	file.store_64(money)
 	file.store_pascal_string(island_name)
+	file.store_16(islanders.size())
 	
-	var islander_save_dict: Dictionary[int, PackedByteArray] = {}
-	
+
+
 	for islander_id in islanders:
 		var islander: IslanderData = islanders[islander_id]
-
-		islander_save_dict[islander_id] = islander.serialise()
+		var islander_bytes: PackedByteArray = islander.serialise()
+		file.store_16(islander_bytes.size())
+		file.store_buffer(islander_bytes)
 	
-	file.store_var(islander_save_dict, true)
 	
 
-func load(file: FileAccess):
+func load_game(file: FileAccess):
 	save_version = file.get_32()
 	money = file.get_64()
 	island_name = file.get_pascal_string()
-	var islander_data_dict: Dictionary[int, PackedByteArray] = file.get_var(true)
-	islanders = {}
-	for islander_id in islander_data_dict:
-		islanders[islander_id] = IslanderData.deserialise(islander_data_dict[islander_id])
+	var islander_count: int = file.get_16()
+	for i in range(islander_count):
+		var islander_size: int = file.get_16()
+		var islander_bytes: PackedByteArray = file.get_buffer(islander_size)
+		var islander := IslanderData.deserialise(islander_bytes)
+		islanders[islander.id] = islander

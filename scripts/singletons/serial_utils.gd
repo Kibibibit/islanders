@@ -29,3 +29,10 @@ static func u8_to_float(v: int, _max: int = 255) -> float:
 		push_error("Value out of range: %s" % v)
 		return 0.0
 	return float(v) / float(_max)
+
+static func memcpy(src: PackedByteArray, dst: PackedByteArray, src_offset: int = 0, dst_offset: int = 0, size: int = -1) -> void:
+	if size == -1:
+		size = src.size() - src_offset
+	dst.resize(dst.size() + size)
+	for i in range(size):
+		dst[dst_offset + i] = src[src_offset + i]

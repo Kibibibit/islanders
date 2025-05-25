@@ -96,6 +96,7 @@ func _init() -> void:
 	colors = ColorProfile.new()
 	height_modifier = 1.0
 	width_modifier = 1.0
+	preferred_flavour = Flavour.new()
 	life_stage = LifeStage.ADULT
 
 func _generate_adult_body_type(_young_body_type: YoungBodyType) -> BodyType:
@@ -114,19 +115,19 @@ func serialise() -> PackedByteArray:
 	out.resize(SIZE)
 	out.fill(0)
 	
-	out.encode_var(ptr, first_name)
+	SerialUtils.memcpy(first_name.to_utf8_buffer(), out, 0, ptr)
 	ptr += SerialUtils.MAX_NAME_LEN
 	
-	out.encode_var(ptr, last_name)
+	SerialUtils.memcpy(last_name.to_utf8_buffer(), out, 0, ptr)
 	ptr += SerialUtils.MAX_NAME_LEN
 	
-	out.encode_var(ptr, nickname)
+	SerialUtils.memcpy(nickname.to_utf8_buffer(), out, 0, ptr)
 	ptr += SerialUtils.MAX_NAME_LEN
 	
 	out.encode_s64(ptr, birthdate.to_unix_time())
 	ptr += Date.SIZE
 	
-	out.encode_var(ptr, personality.serialise())
+	SerialUtils.memcpy(personality.serialise(), out, 0, ptr)
 	ptr += Personality.SIZE
 
 	out.encode_u8(ptr, body_type as int)
@@ -134,14 +135,14 @@ func serialise() -> PackedByteArray:
 	out.encode_u8(ptr, young_body_type as int)
 	ptr += 1
 
-	out.encode_var(ptr, colors.serialise())
+	SerialUtils.memcpy(colors.serialise(), out, 0, ptr)
 	ptr += ColorProfile.SIZE
 
 	out.encode_u8(ptr, SerialUtils.float_to_u8(height_modifier, 100))
 	ptr += 1
 	out.encode_u8(ptr, SerialUtils.float_to_u8(width_modifier, 100))
 	ptr += 1
-	out.encode_var(ptr, preferred_flavour.serialise())
+	SerialUtils.memcpy(preferred_flavour.serialise(), out, 0, ptr)
 	ptr += Flavour.SIZE
 
 	out.encode_u8(ptr, life_stage as int)
@@ -153,13 +154,15 @@ static func deserialise(data: PackedByteArray) -> IslanderProfile:
 	var ptr: int = 0
 	var out := IslanderProfile.new()
 	
-	out.first_name = data.decode_var(ptr)
+	out.first_name = data.slice(ptr, ptr + SerialUtils.MAX_NAME_LEN).get_string_from_utf8()
 	ptr += SerialUtils.MAX_NAME_LEN
 	
-	out.last_name = data.decode_var(ptr)
+	
+	out.last_name = data.slice(ptr, ptr + SerialUtils.MAX_NAME_LEN).get_string_from_utf8()
 	ptr += SerialUtils.MAX_NAME_LEN
 	
-	out.nickname = data.decode_var(ptr)
+	
+	out.nickname = data.slice(ptr, ptr + SerialUtils.MAX_NAME_LEN).get_string_from_utf8()
 	ptr += SerialUtils.MAX_NAME_LEN
 	
 	out.birthdate = Date.from_unix_time(data.decode_s64(ptr))
