@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://qtqq257mat6b"]
+
+[ext_resource type="Script" uid="uid://bs3hax4go6jyr" path="res://scenes/prefabs/islander/islander.gd" id="1_ndd7c"]
+[ext_resource type="PackedScene" uid="uid://dq5dajobhd020" path="res://scenes/prefabs/islander_mesh/islander_mesh.tscn" id="2_8d0yn"]
+
+[node name="Islander" type="Node3D"]
+script = ExtResource("1_ndd7c")
+
+[node name="IslanderMesh" parent="." instance=ExtResource("2_8d0yn")]
+unique_name_in_owner = true

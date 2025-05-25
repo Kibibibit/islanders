@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dq5dajobhd020"]
+
+[ext_resource type="Script" uid="uid://rwn0v1h5jtuy" path="res://scenes/prefabs/islander_mesh/islander_mesh.gd" id="1_4wgnh"]
+[ext_resource type="ArrayMesh" uid="uid://dlufsnr302o1x" path="res://resources/meshes/body_types/A.obj" id="1_5qswg"]
+
+[node name="IslanderMesh" type="Node3D"]
+script = ExtResource("1_4wgnh")
+
+[node name="IslanderMeshInstance" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+mesh = ExtResource("1_5qswg")
