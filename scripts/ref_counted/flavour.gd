@@ -3,7 +3,8 @@ class_name Flavour
 
 
 
-
+## TODO: Possibly add other flavours that aren't literal flavours,
+## like fruity or nutty?
 enum FlavourType {
 	SWEET,
 	BITTER,
