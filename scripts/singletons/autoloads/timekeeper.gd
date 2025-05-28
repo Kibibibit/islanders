@@ -1,5 +1,10 @@
 extends Timer
 
+## TODO: Replace language "event" with "request", events are more global things
+## that happen island-wide. Requests are specific to an islander and their needs,
+## however they do not need to directly be asking for something from the player.
+## For example, fights, dreams and other things that the player can observe but
+## do not interrupt the game flow.
 
 const UPDATE_DELTA: int = 5
 
