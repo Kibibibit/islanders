@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FoodDef" load_steps=2 format=3 uid="uid://d1gw6hc03x28f"]
+
+[ext_resource type="Script" uid="uid://bnydklc3xuv18" path="res://scripts/resources/food_def.gd" id="1_gen1h"]
+
+[resource]
+script = ExtResource("1_gen1h")
+food_value = 0.5
+sweetness = 0.38
+bitterness = -0.27
+sourness = 0.23
+saltiness = 0.9
+umami = 0.41
+spiciness = -0.1
+name = "Chocolate Cake"
+price = 10
+rarity = 1
+metadata/_custom_type_script = "uid://bnydklc3xuv18"

@@ -1,10 +1,9 @@
 extends RefCounted
 class_name IslanderState
 
-# One byte for most fields, 8 bytes for money
-const SIZE: int = 1 + 1 + 1 + 1 + 8
-
 # TODO: Store current location, current activity, event queue
+
+var islander_id: int
 
 ## The amount of energy per second an islander loses if not
 ## at home
@@ -19,8 +18,12 @@ const AT_HOME_ENERGY_GAIN: float = 0.2
 const SLEEP_ENERGY_GAIN: float = 0.8
 const SLEEP_HUNGER_DRAIN: float = 0.05
 
+## How long this islander can do activities before needing to return home
 var energy: float
+## How much food can this islander eat before being full
 var hunger: float
+
+## How close is this islander to levelling up
 var happiness: float
 var level: int
 
@@ -28,12 +31,17 @@ var money: int
 
 var last_event_time: int
 
+var current_location_id: int
+var current_activity: StringName
+
 func _init() -> void:
 	energy = 1.0
 	hunger = 1.0
 	happiness = 1.0
 	level = 1
 	money = 0
+	
+	current_activity = ActivityID.IDLE
 
 
 func update(personality: Personality, delta: float) -> void:
@@ -57,28 +65,7 @@ func update(personality: Personality, delta: float) -> void:
 	hunger = clamp(hunger, 0.0, 1.0)
 	
 func at_home() -> bool:
-	## TODO: Actually check their position
-	return true
+	return LocationIDs.is_islanders_home(islander_id, current_location_id)
+	
 func is_sleeping() -> bool:
-	## TODO: Actually check their sleep state
-	return false
-
-func serialise() -> PackedByteArray:
-	var out := PackedByteArray()
-	out.resize(SIZE)
-	out.fill(0)
-	out.encode_s8(0, SerialUtils.float_to_u8(energy, 100))
-	out.encode_s8(1, SerialUtils.float_to_u8(hunger, 100))
-	out.encode_s8(2, SerialUtils.float_to_u8(happiness, 100))
-	out.encode_s8(3, level)
-	out.encode_u64(4, money)
-	return out
-
-static func deserialise(data: PackedByteArray) -> IslanderState:
-	var out := IslanderState.new()
-	out.energy = SerialUtils.u8_to_float(data.decode_u8(0), 100)
-	out.hunger = SerialUtils.u8_to_float(data.decode_u8(1), 100)
-	out.happiness = SerialUtils.u8_to_float(data.decode_u8(2), 100)
-	out.level = data.decode_u8(3)
-	out.money = data.decode_u64(4)
-	return out
+	return current_activity == ActivityID.SLEEPING
