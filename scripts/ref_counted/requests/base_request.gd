@@ -1,5 +1,5 @@
-extends Resource
-class_name BaseRequestDef
+extends RefCounted
+class_name BaseRequest
 
 
 ## Base class for all requests
@@ -12,6 +12,13 @@ enum RequestType {
 	ITEM,
 	QUESTION,
 	ERROR
+}
+
+const MAX_REQUEST_OF_TYPE: Dictionary[RequestType, int] = {
+	RequestType.FOOD: 1,
+	RequestType.ITEM: 5,
+	RequestType.QUESTION: 5,
+	RequestType.ERROR: 1
 }
 
 

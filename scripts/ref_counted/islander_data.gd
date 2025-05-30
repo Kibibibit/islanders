@@ -7,10 +7,13 @@ var profile: IslanderProfile
 var state: IslanderState
 var mesh: Mesh
 
-# TODO: Store inventory, relationships, history
+# Store inventory
+
 
 func _init() -> void:
 	islander_id = GameState.generate_islander_id()
+	profile = IslanderProfile.new()
+	state = IslanderState.new()
 	state.islander_id = islander_id
 	profile.islander_id = islander_id
 

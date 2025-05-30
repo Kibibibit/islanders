@@ -10,6 +10,7 @@ var nickname: String
 var birthdate: String
 var personality: Personality
 var preferred_flavour: Flavour
+var home_location_id: int
 
 
 func _init() -> void:
@@ -19,3 +20,14 @@ func _init() -> void:
 	birthdate = ""
 	personality = Personality.new()
 	preferred_flavour = Flavour.new()
+	home_location_id = -1
+
+
+
+## TODO: Implement this
+func get_history() -> Array[IslanderHistoryEvent]:
+	## Load from file, as this could get a little large
+	return []
+
+func add_history_event(_event: IslanderHistoryEvent) -> void:
+	pass

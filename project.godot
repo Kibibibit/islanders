@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameState="*res://scripts/singletons/autoloads/game_state.gd"
-SaveLoadHandler="*res://scripts/singletons/autoloads/save_load_handler.gd"
 Timekeeper="*res://scripts/singletons/autoloads/timekeeper.gd"
 
 [filesystem]
