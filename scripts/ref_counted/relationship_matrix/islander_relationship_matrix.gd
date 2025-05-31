@@ -8,9 +8,9 @@ class_name IslanderRelationshipMatrix
 var matrix: Dictionary[int, IslanderRelationshipMatrixRow] = {} # islander_id -> IslanderRelationshipMatrixRow Map
 
 
-var _unknown: Relationship = Relationship.new(0.0, Relationship.RelationshipType.NEUTRAL) # Default relationship for unknown islanders
+var _unknown: RelationshipItem = RelationshipItem.new(0.0, RelationshipItem.RelationshipType.NEUTRAL) # Default relationship for unknown islanders
 
-func get_relationship(islander_id_a: int, islander_id_b: int) -> Relationship:
+func get_relationship(islander_id_a: int, islander_id_b: int) -> RelationshipItem:
 	assert(islander_id_a != islander_id_b, "Cannot get relationship with self")
 
 	if not matrix.has(islander_id_a):
@@ -22,7 +22,7 @@ func get_relationship(islander_id_a: int, islander_id_b: int) -> Relationship:
 	
 	return row.relationships[islander_id_b]
 
-func set_relationship_type(islander_id_a: int, islander_id_b: int, relationship: Relationship.RelationshipType) -> void:
+func set_relationship_type(islander_id_a: int, islander_id_b: int, relationship: RelationshipItem.RelationshipType) -> void:
 	assert(islander_id_a != islander_id_b, "Cannot set relationship with self")
 
 	if not matrix.has(islander_id_a):
@@ -30,7 +30,7 @@ func set_relationship_type(islander_id_a: int, islander_id_b: int, relationship:
 	
 	var row: IslanderRelationshipMatrixRow = matrix[islander_id_a]
 	if not row.relationships.has(islander_id_b):
-		row.relationships[islander_id_b] = Relationship.new(0.0, relationship)
+		row.relationships[islander_id_b] = RelationshipItem.new(0.0, relationship)
 	else:
 		row.relationships[islander_id_b].relationship_type = relationship
 	
@@ -38,7 +38,7 @@ func set_relationship_type(islander_id_a: int, islander_id_b: int, relationship:
 		matrix[islander_id_b] = IslanderRelationshipMatrixRow.new()
 	var reverse_row: IslanderRelationshipMatrixRow = matrix[islander_id_b]
 	if not reverse_row.relationships.has(islander_id_a):
-		reverse_row.relationships[islander_id_a] = Relationship.new(0.0, relationship)
+		reverse_row.relationships[islander_id_a] = RelationshipItem.new(0.0, relationship)
 	else:
 		reverse_row.relationships[islander_id_a].relationship_type = relationship
 
@@ -50,7 +50,7 @@ func set_relationship_strength(islander_id_a: int, islander_id_b: int, strength:
 	
 	var row: IslanderRelationshipMatrixRow = matrix[islander_id_a]
 	if not row.relationships.has(islander_id_b):
-		row.relationships[islander_id_b] = Relationship.new(strength, Relationship.RelationshipType.NEUTRAL)
+		row.relationships[islander_id_b] = RelationshipItem.new(strength, RelationshipItem.RelationshipType.NEUTRAL)
 	else:
 		row.relationships[islander_id_b].relationship_strength = strength
 

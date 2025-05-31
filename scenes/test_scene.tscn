@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvgs7bl7hktjl"]
+[gd_scene load_steps=6 format=3 uid="uid://dvgs7bl7hktjl"]
 
 [ext_resource type="Script" uid="uid://b4guv8cpo3q8g" path="res://scripts/main.gd" id="1_g7g4h"]
+[ext_resource type="PackedScene" uid="uid://bvnxhhuv6y2bt" path="res://scenes/ui/ui.tscn" id="2_j8ivh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_g7g4h"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -27,3 +28,5 @@ environment = SubResource("Environment_nd71p")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.999297, -0.00884333, 0.0364207, 0, 0.971764, 0.235955, -0.0374789, -0.235789, 0.971081, 0.0555398, 1.29376, 3.64378)
+
+[node name="Ui" parent="." instance=ExtResource("2_j8ivh")]

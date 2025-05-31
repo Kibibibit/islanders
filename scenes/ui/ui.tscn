@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvnxhhuv6y2bt"]
+
+[ext_resource type="Script" uid="uid://cg4euf3cpp5y2" path="res://scenes/ui/ui.gd" id="1_u7n8c"]
+[ext_resource type="PackedScene" uid="uid://dlgmw7erw8rt7" path="res://scenes/ui/dialog_box/dialog_box.tscn" id="2_f5cxw"]
+
+[node name="Ui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u7n8c")
+
+[node name="DialogBox" parent="." instance=ExtResource("2_f5cxw")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1

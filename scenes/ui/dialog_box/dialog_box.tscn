@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://dlgmw7erw8rt7"]
+
+[ext_resource type="Script" uid="uid://dvjpybpp8s10t" path="res://scenes/ui/dialog_box/dialog_box.gd" id="1_1i62m"]
+[ext_resource type="Theme" uid="uid://dxfd7v1ued1ac" path="res://resources/themes/ui_theme.tres" id="1_rxu72"]
+
+[node name="DialogBox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1i62m")
+
+[node name="PanelMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.792
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_rxu72")
+
+[node name="Background" type="Panel" parent="PanelMargin"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelMargin/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_rxu72")
+
+[node name="DialogBoxBlinker" type="Label" parent="PanelMargin/Background/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "➤"
+
+[node name="DialogBoxText" type="RichTextLabel" parent="PanelMargin/Background/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+
+[node name="DialogBoxTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="DialogBoxBlinkerTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.5

@@ -7,6 +7,7 @@ var money: int = 0
 var island_name: String
 var islanders: Dictionary[int, IslanderData] = {}
 var relationship_matrix: IslanderRelationshipMatrix = IslanderRelationshipMatrix.new()
+var ui: UI
 
 func generate_islander_id() -> int:
 	var out: int = INVALID_ISLANDER_ID
@@ -23,10 +24,10 @@ func get_islander(islander_id: int) -> IslanderData:
 		return null
 
 
-func get_relationship(islander_id: int, other_id: int) -> Relationship:
+func get_relationship(islander_id: int, other_id: int) -> RelationshipItem:
 	return relationship_matrix.get_relationship(islander_id, other_id)
 
-func set_relationship_type(islander_id: int,other_id: int, relationship: Relationship.RelationshipType) -> void:
+func set_relationship_type(islander_id: int,other_id: int, relationship: RelationshipItem.RelationshipType) -> void:
 	relationship_matrix.set_relationship_type(islander_id, other_id, relationship)
 
 func set_relationship_strength(islander_id: int,other_id: int, strength: float) -> void:

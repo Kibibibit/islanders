@@ -1,5 +1,5 @@
 extends RefCounted
-class_name Relationship
+class_name RelationshipItem
 
 const FAMILY_MASK: int = 0b1_0000000
 
